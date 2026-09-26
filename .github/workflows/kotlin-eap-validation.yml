@@ -1,0 +1,26 @@
+name: Kotlin EAP validation
+
+on:
+  push:
+    branches:
+      - eap/kotlin
+  pull_request:
+    branches:
+      - trunk
+  workflow_dispatch:
+
+permissions:
+  contents: read
+
+jobs:
+  validate:
+    if: ${{ github.ref == 'refs/heads/eap/kotlin' || github.head_ref == 'eap/kotlin' }}
+    runs-on: macos-latest
+    steps:
+      - uses: actions/checkout@v6
+      - uses: actions/setup-java@v5
+        with:
+          distribution: 'zulu'
+          java-version: '25'
+      - uses: gradle/actions/setup-gradle@v5
+      - run: ./gradlew build dokkaGenerate -Pkotlin.native.ignoreDisabledTargets=true
