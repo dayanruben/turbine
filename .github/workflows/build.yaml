@@ -15,6 +15,7 @@ env:
 
 jobs:
   build:
+    if: ${{ github.ref != 'refs/heads/eap/kotlin' && github.head_ref != 'eap/kotlin' }}
     runs-on: macos-latest
 
     steps:
@@ -43,3 +44,16 @@ jobs:
           FOLDER: build/dokka/html
           TARGET_FOLDER: docs/latest/
           CLEAN: true
+
+  eap-validation:
+    if: ${{ github.ref == 'refs/heads/eap/kotlin' || github.head_ref == 'eap/kotlin' }}
+    runs-on: macos-latest
+
+    steps:
+      - uses: actions/checkout@v6
+      - uses: actions/setup-java@v5
+        with:
+          distribution: 'zulu'
+          java-version-file: .github/workflows/.java-version
+
+      - run: ./gradlew build dokkaGenerate -Pkotlin.native.ignoreDisabledTargets=true
