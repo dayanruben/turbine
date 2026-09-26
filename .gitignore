@@ -9,3 +9,5 @@ build
 # IntelliJ
 /.idea
 *.iml
+
+.junie
